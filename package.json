@@ -1,5 +1,5 @@
 {
-  "name": "angular-quickstart",
+  "name": "AngularBIRT2",
   "version": "1.0.0",
   "scripts": {
     "start": "concurrently \"npm run tsc:w\" \"npm run lite\" ",
