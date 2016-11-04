@@ -15,12 +15,20 @@ const birtHeader_component_1 = require("./birtHeader.component");
 const birtContent_component_1 = require("./birtContent.component");
 const birtFooter_component_1 = require("./birtFooter.component");
 const birtSocial_component_1 = require("./birtSocial.component");
+const birtNavItems_component_1 = require("./birtNavItems.component");
+const birtNavBranding_component_1 = require("./birtNavBranding.component");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     core_1.NgModule({
         imports: [platform_browser_1.BrowserModule],
-        declarations: [app_component_1.AppComponent, birtHeader_component_1.BirtHeaderComponent, birtContent_component_1.BirtContentComponent, birtFooter_component_1.BirtFooterComponent, birtSocial_component_1.BirtSocialComponent],
+        declarations: [app_component_1.AppComponent,
+            birtHeader_component_1.BirtHeaderComponent,
+            birtContent_component_1.BirtContentComponent,
+            birtFooter_component_1.BirtFooterComponent,
+            birtSocial_component_1.BirtSocialComponent,
+            birtNavItems_component_1.BirtNavItemsComponent,
+            birtNavBranding_component_1.BirtNavBrandingComponent],
         bootstrap: [app_component_1.AppComponent]
     }), 
     __metadata('design:paramtypes', [])
