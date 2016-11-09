@@ -35,6 +35,73 @@ export class BirtService {
 
     };
 
+    getParameters = function(dlg, pane, paramPane) {
+        console.log('getParameters');
+        window.birtParameters = new actuate.Parameter(paramPane);
+
+        window.birtParameters.setReportName(window.reportDesign);
+        window.birtParameters.submit(function() {
+            // TODO: Do this the angular way
+            //console.log(birtParameters);
+            var paramDef = window.birtParameters._._paramImpl._paramDefs;
+
+            for(var i=0;i<paramDef.length;i++) {
+                if(paramDef[i]._._isRequired == true && paramDef[i]._._isHidden == false) {
+                    $('.reportExplorerControls').fadeOut('slow', function() {
+                        $('#openDialogTitle').html('Report Parameters');
+                        $('.reportExplorerParameters').fadeIn('slow', function(){});
+                    });
+                }
+            }
+
+            var reqOps = new actuate.RequestOptions();
+            reqOps.setRepositoryType('Enterprise');
+            reqOps.setVolume('Default Volume');
+            reqOps.setCustomParameters({});
+
+            var viewer1 = new actuate.Viewer(pane);
+            viewer1.setReportDesign(window.reportDesign);
+            var options = new actuate.viewer.UIOptions();
+            viewer1.setUIOptions(options);
+            if($('.designMessage').is(":visible")) {
+                $('.designMessage').fadeOut('slow', function() {
+                    $('#' + pane).fadeIn('slow', function(){});
+                })
+            }
+            viewer1.submit(function() {
+                //dlg.close();
+            });
+            //this.runReport(pane, window.reportName, null);
+            //dlg.close();
+        });
+    }
+
+    openDialogRunParameters = function(pane, dlg) {
+        console.log('openDialogRunParameters');
+        console.log('what');
+        var executor = this.runReport;
+        window.birtParameters.downloadParameterValues(function(pvalues) {
+            var reqOps = new actuate.RequestOptions();
+            reqOps.setRepositoryType('Enterprise');
+            reqOps.setVolume('Default Volume');
+            reqOps.setCustomParameters({});
+
+            var viewer1 = new actuate.Viewer(pane);
+            viewer1.setReportDesign(window.reportDesign);
+            var options = new actuate.viewer.UIOptions();
+            viewer1.setUIOptions(options);
+            viewer1.setParameterValues(pvalues);
+            if($('.designMessage').is(":visible")) {
+                $('.designMessage').fadeOut('slow', function() {
+                    $('#' + pane).fadeIn('slow', function(){});
+                })
+            }
+            viewer1.submit(function() {
+                //dlg.close();
+            });
+        });
+    }
+
     openParameters = function(dlg, pane) {
         var birtParameters = new actuate.Parameter(pane);
 
@@ -46,8 +113,9 @@ export class BirtService {
     }
 
     runWithParameters = function(dlg, pane) {
-        this.runReport(pane, window.reportDesign, window.params);
-        dlg.close();
+        console.log('runWithParameters');//*******
+        this.getParameters(dlg, pane, 'birtParameters')
+        //this.openDialogRunParameters(pane, dlg);
     }
 
     openDialog = function(pane) {
@@ -94,7 +162,7 @@ export class BirtService {
             reqOps.setCustomParameters({});
 
             var viewer1 = new actuate.Viewer(pane);
-            viewer1.setReportDesign($('#openReportName').val());
+            viewer1.setReportDesign(window.reportDesign);
             var options = new actuate.viewer.UIOptions();
             viewer1.setUIOptions(options);
             viewer1.setParameterValues(parameters);
@@ -105,18 +173,18 @@ export class BirtService {
         }
     }
 
-    openReport = function(dlg, pane, reportName) {
-        console.log(dlg);
-        console.log(pane);
+    openReport = function(dlg, pane, paramPane) {
+        console.log('openReport');
+        this.getParameters(dlg, pane, paramPane);
 
-        this.runReport(pane, window.reportDesign, null);
-        $('.designMessage').hide();
-        dlg.close();
+        //this.runReport(pane, window.reportDesign, null);
+        //$('.designMessage').hide();
+        //dlg.close();
     }
 
     saveReport = function(dlg) {
-        alert($('#saveReportName').val());
-        dlg.close();
+        //alert($('#saveReportName').val());
+        //dlg.close();
     }
 
     parametersDialog = function() {

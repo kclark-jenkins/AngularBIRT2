@@ -16,62 +16,50 @@
     </li>
     <li><a href="#" role="button"><p (click)="open(openDialog)"             class="text-muted">Open</p></a></li>
     <li><a href="#" role="button"><p (click)="save(saveDialog)"             class="text-muted">Save</p></a></li>
-    <li><a href="#" role="button"><p (click)="filters(filtersDialog)"       class="text-muted">Filters</p></a></li>
-    <li><a href="#" role="button"><p (click)="parameters(parametersDialog)" class="text-muted">Parameters</p></a></li>
+    <li><a href="#" role="button"><p (click)="runWithParameters(openDialog, 'birtParameters')" class="text-muted">Parameters</p></a></li>
     <li><a href="#" role="button"><p (click)="help(helpDialog)"             class="text-muted">Help</p></a></li>
-    <li><div class="pagination"></div></li>
 </ul>
 
-<modal #openDialog (open)="openExplorer('reportExplorer')">
+<ul class="nav navbar-nav navbar-right">
+    <li class="birtNav"><i class="fa fa-fast-backward" aria-hidden="true"></i></li>
+    <li class="birtNav"><i class="fa fa-backward" aria-hidden="true"></i></li>
+    <li class="birtNav birtNavNum">0</li>
+    <li class="birtNav birtNavNum">of</li>
+    <li class="birtNav birtNavNum">0</li>
+    <li class="birtNav"><i class="fa fa-forward" aria-hidden="true"></i></li>
+    <li class="birtNav"><i class="fa fa-fast-forward" aria-hidden="true"></i></li>
+</ul>
+
+<!--<modal #openDialog (focusin)="openExplorer('reportExplorer')">-->
+<modal #openDialog (onOpen)="openExplorer('reportExplorer')">
     <modal-header>
         <h1>Select a report design</h1>
     </modal-header>
     <modal-content>
-        <div class="reportExplorer" id="reportExplorer"></div>
+        <div class="reportExplorer reportExplorerControls" id="reportExplorer"></div>
+        <div class="reportExplorerParameters" id="reportExplorerParameters"></div>
     </modal-content>
     <modal-footer>
         <input type="text" class="form-control openReportName" id="openReportName">
-        <button class="btn btn-primary" (click)="openReport(openDialog, 'birt')">Open</button>
-        <button class="btn btn-primary" (click)="openDialog.close()">Close</button>
+        <button class="btn btn-primary reportExplorerControls" (click)="openReport(openDialog, 'birt', 'reportExplorerParameters')">Open</button>
+        <button class="btn btn-primary reportExplorerControls" (click)="openDialog.close()">Close</button>
+        <button (click)="openDialogRunParams('birt', openDialog)" class="btn btn-primary reportExplorerParameters" id="reportExplorerParametersRun">Run Report</button>
+        <button (click)="swapViewerParams()" class="btn btn-primary reportExplorerParameters">Select Report</button>
+        <button class="btn btn-primary reportExplorerParameters">Close</button>
     </modal-footer>
 </modal>
 
-<modal #saveDialog (focusin)="saveExplorer('saveExplorer')">
+<modal #saveDialog (onOpen)="saveExplorer('saveExplorer')">
     <modal-header>
-        <h1>Select a location for your design</h1>
+        <h1 id="openDialogTitle">Select a location for your design</h1>
     </modal-header>
     <modal-content>
-        <div class="reportExplorer" id="saveExplorer"></div>
+        <div class="saveExplorer" id="saveExplorer"></div>
     </modal-content>
     <modal-footer>
         <input type="text" class="form-control saveReportName" id="saveReportName">
         <button class="btn btn-primary" (click)="saveReport(saveDialog)">Save</button>
         <button class="btn btn-primary" (click)="saveDialog.close()">Close</button>
-    </modal-footer>
-</modal>
-
-<modal #filtersDialog>
-    <modal-header>
-        <h1>Filters</h1>
-    </modal-header>
-    <modal-content>
-        Hello Modal!
-    </modal-content>
-    <modal-footer>
-        <button class="btn btn-primary" (click)="filtersDialog.close()">close</button>
-    </modal-footer>
-</modal>
-
-<modal #parametersDialog (focusin)="openParameters(parametersDialog, 'birtParameters')">
-    <modal-header>
-        <h1>Parameters</h1>
-    </modal-header>
-    <modal-content>
-        <div id="birtParameters"></div>
-    </modal-content>
-    <modal-footer>
-        <button class="btn btn-primary" (click)="runWithParameters(parametersDialog, 'birt')">Run Report</button>
-        <button class="btn btn-primary" (click)="parametersDialog.close()">Close</button>
     </modal-footer>
 </modal>
 
