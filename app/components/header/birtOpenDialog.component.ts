@@ -3,7 +3,7 @@ import {ModalModule} from "ng2-modal";
 
 @Component({
     selector: 'birt-open-dialog',
-    templateUrl: 'templates/birtOpenDialog.tmpl.html'
+    templateUrl: 'templates/html/birtOpenDialog.tmpl.html'
 })
 export class BirtOpenDialogComponent implements  OnInit, AfterViewChecked, AfterViewInit {
     ngOnInit(): void {

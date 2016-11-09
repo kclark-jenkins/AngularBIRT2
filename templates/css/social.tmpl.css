@@ -1,0 +1,90 @@
+.social {
+    color: white;
+}
+
+@import url(http://weloveiconfonts.com/api/?family=entypo);
+
+/* entypo */
+[class*="entypo-"]:before {
+    font-family: "entypo", sans-serif;
+}
+a {
+    text-decoration: none;
+}
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.socialContainer {
+    margin: 0 auto;
+    padding: 20px 50px;
+    background: white;
+}
+.socialNetworks {
+    left: 0;
+    position: fixed;
+    top: 150px;
+}
+.socialNetworks a {
+    background: #333;
+    display: block;
+    height: 35px;
+    font: 16px "Open Sans", sans-serif;
+    line-height: 35px;
+    position: relative;
+    text-align: center;
+    width: 35px;
+    color: white;
+}
+
+.socialNetworks i {
+    line-height: 2;
+}
+
+.socialNetworks a span {
+    line-height: 35px;
+    left: -120px;
+    position: absolute;
+    text-align:center;
+    width:120px;
+    color: white;
+}
+.socialNetworks a:hover span {
+    left: 100%;
+}
+.socialNetworks a[class*="facebook"],
+.socialNetworks a[class*="facebook"]:hover,
+.socialNetworks a[class*="facebook"] span { background: #3b5998; }
+
+.socialNetworks a[class*="twitter"],
+.socialNetworks a[class*="twitter"]:hover,
+.socialNetworks a[class*="twitter"] span { background: #00aced; }
+
+.socialNetworks a[class*="gplus"],
+.socialNetworks a[class*="gplus"]:hover,
+.socialNetworks a[class*="gplus"] span { background: #dd4b39; }
+
+.socialNetworks a[class*="linkedin"],
+.socialNetworks a[class*="linkedin"]:hover,
+.socialNetworks a[class*="linkedin"] span { background: #007bb6; }
+
+.socialNetworks a[class*="instagrem"],
+.socialNetworks a[class*="instagrem"]:hover,
+.socialNetworks a[class*="instagrem"] span { background: #517fa4; }
+
+.socialNetworks a[class*="stumbleupon"],
+.socialNetworks a[class*="stumbleupon"]:hover,
+.socialNetworks a[class*="stumbleupon"] span { background: #eb4924; }
+
+.socialNetworks a[class*="pinterest"],
+.socialNetworks a[class*="pinterest"]:hover,
+.socialNetworks a[class*="pinterest"] span { background: #cc2127; }
+
+.socialNetworks a[class*="flickr"],
+.socialNetworks a[class*="flickr"]:hover,
+.socialNetworks a[class*="flickr"] span { background: #ff0084; }
+
+.socialNetworks a[class*="tumblr"],
+.socialNetworks a[class*="tumblr"]:hover,
+.socialNetworks a[class*="tumblr"] span { background: #32506d; }

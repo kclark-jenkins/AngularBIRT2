@@ -1,0 +1,5 @@
+.reportExplorer {
+    height: 100px;
+    overflow: auto;
+    overflow-y: auto;
+}

@@ -10,13 +10,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const core_1 = require('@angular/core');
 let AppComponent = class AppComponent {
+    constructor(viewContainerRef) {
+        // You need this small hack in order to catch application root view container ref
+        this.viewContainerRef = viewContainerRef;
+    }
 };
 AppComponent = __decorate([
     core_1.Component({
         selector: 'my-app',
-        templateUrl: 'templates/index.tmpl.html'
+        templateUrl: 'templates/html/index.tmpl.html'
     }), 
-    __metadata('design:paramtypes', [])
+    __metadata('design:paramtypes', [core_1.ViewContainerRef])
 ], AppComponent);
 exports.AppComponent = AppComponent;
 //# sourceMappingURL=app.component.js.map

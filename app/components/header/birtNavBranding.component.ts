@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'birt-nav-branding',
-    templateUrl: 'templates/birtNavBranding.tmpl.html'
+    templateUrl: 'templates/html/birtNavBranding.tmpl.html'
 })
 export class BirtNavBrandingComponent {
 }

@@ -10,16 +10,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const core_1 = require('@angular/core');
 const platform_browser_1 = require('@angular/platform-browser');
-const app_component_1 = require('./app.component');
-const birtHeader_component_1 = require("./birtHeader.component");
-const birtContent_component_1 = require("./birtContent.component");
-const birtFooter_component_1 = require("./birtFooter.component");
-const birtSocial_component_1 = require("./birtSocial.component");
-const birtNavItems_component_1 = require("./birtNavItems.component");
-const birtNavBranding_component_1 = require("./birtNavBranding.component");
-const openDialog_component_1 = require("./openDialog.component");
+const app_component_1 = require('../../components/app/app.component');
 const ng2_modal_1 = require("ng2-modal");
-const birtOpenDialog_component_1 = require("./birtOpenDialog.component");
+const birtOpenDialog_component_1 = require("../../components/header/birtOpenDialog.component");
+const birtHeader_component_1 = require("../../components/header/birtHeader.component");
+const birtContent_component_1 = require("../../components/content/birtContent.component");
+const birtFooter_component_1 = require("../../components/footer/birtFooter.component");
+const birtSocial_component_1 = require("../../components/social/birtSocial.component");
+const birtNavItems_component_1 = require("../../components/header/birtNavItems.component");
+const birtNavBranding_component_1 = require("../../components/header/birtNavBranding.component");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -32,10 +31,9 @@ AppModule = __decorate([
             birtSocial_component_1.BirtSocialComponent,
             birtNavItems_component_1.BirtNavItemsComponent,
             birtNavBranding_component_1.BirtNavBrandingComponent,
-            openDialog_component_1.DialogComponent,
             birtOpenDialog_component_1.BirtOpenDialogComponent,
         ],
-        entryComponents: [openDialog_component_1.DialogComponent],
+        entryComponents: [],
         bootstrap: [app_component_1.AppComponent]
     }), 
     __metadata('design:paramtypes', [])

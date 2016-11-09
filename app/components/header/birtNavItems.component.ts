@@ -1,11 +1,13 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { BirtService } from './birt.service';
+import { BirtService } from '../../services/birt/birt.service';
+import {BirtOpenDialogComponent} from "./birtOpenDialog.compoent";
 
 declare var jsapi: any;
 
 @Component({
     selector: 'birt-nav-items',
-    templateUrl: 'templates/birtNavItems.tmpl.html',
+    templateUrl: 'templates/html/birtNavItems.tmpl.html',
+    styleUrls: ['templates/css/report-explorer.tmpl.css'],
     providers: [BirtService]
 })
 export class BirtNavItemsComponent implements OnInit {
@@ -16,12 +18,17 @@ export class BirtNavItemsComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    tester(): void {
+        //var t = new BirtOpenDialogComponent();
+        //t.open();
+    }
+
     openExplorer(pane): void {
         this.birtService.openDialog(pane);
     }
 
     openReport(dlg, pane): void {
-        this.birtService.openReport(dlg, pane);
+        //this.birtService.openReport(dlg, pane);
     }
 
     saveReport(dlg): void {
@@ -30,6 +37,14 @@ export class BirtNavItemsComponent implements OnInit {
 
     saveExplorer(pane): void {
         this.birtService.saveDialog(pane);
+    }
+
+    openParameters(dlg, pane): void {
+        this.birtService.openParameters(dlg, pane);
+    }
+
+    runWithParameters(dlg, pane): void {
+        this.birtService.runWithParameters(dlg, pane);
     }
 
     open(t): void {

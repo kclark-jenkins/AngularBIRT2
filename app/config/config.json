@@ -1,0 +1,9 @@
+{
+  "actHostname": "http://localhost:8700/iportal",
+  "actUsername": "Administrator",
+  "actPassword": "",
+  "actRepoType": "Enterprise",
+  "actVolume":   "Default Volume",
+  "actViewer":   "birt",
+  "actParams":   "birtParams"
+}

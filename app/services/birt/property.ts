@@ -9,4 +9,5 @@ export class Property {
     openExplorer: Object;
     saveExplorer: Object;
     load:         Function;
+    reportDesign: string;
 }

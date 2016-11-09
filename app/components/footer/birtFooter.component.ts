@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'birt-footer',
-    templateUrl: 'templates/birtFooter.tmpl.html'
+    templateUrl: 'templates/html/birtFooter.tmpl.html'
 })
 export class BirtFooterComponent {
 }

@@ -18,6 +18,7 @@ export class BirtService {
             actuate.load('parameter');
             actuate.load('reportexplorer');
             actuate.load('dialog');
+            actuate.load('parameter');
 
             this.req = new actuate.RequestOptions( );
             actuate.initialize( props.ihub, props.reqOps, props.username, props.password, function(){});
@@ -34,12 +35,29 @@ export class BirtService {
 
     };
 
+    openParameters = function(dlg, pane) {
+        var birtParameters = new actuate.Parameter(pane);
+
+        birtParameters.setReportName(window.reportDesign);
+        birtParameters.submit(function() {
+            // TODO: Do this the angular way
+            window.params = birtParameters;
+        });
+    }
+
+    runWithParameters = function(dlg, pane) {
+        this.runReport(pane, window.reportDesign, window.params);
+        dlg.close();
+    }
+
     openDialog = function(pane) {
         var explorer = new actuate.ReportExplorer(pane);
         explorer.registerEventHandler( actuate.reportexplorer.
             EventConstants.ON_SELECTION_CHANGED, function(selected_item, path_name){
             if(path_name != null) {
-                $('#openReportName').val(path_name);
+                // TODO: Do this the angular way
+                window.reportDesign = path_name;
+                $('#openReportName').val(window.reportDesign);
             }else{
             }
         } );
@@ -55,7 +73,9 @@ export class BirtService {
         explorer.registerEventHandler( actuate.reportexplorer.
             EventConstants.ON_SELECTION_CHANGED, function(selected_item, path_name){
             if(path_name != null) {
-                $('#saveReportName').val(path_name);
+                // TODO: Do this the angular way
+                window.reportDesign = path_name;
+                $('#saveReportName').val(window.reportDesign);
             }else{
             }
         } );
@@ -66,10 +86,7 @@ export class BirtService {
         explorer.submit();
     };
 
-    openReport = function(dlg, pane, reportName) {
-        console.log(dlg);
-        console.log(pane);
-
+    runReport = function(pane, reportName, parameters) {
         try {
             var reqOps = new actuate.RequestOptions();
             reqOps.setRepositoryType('Enterprise');
@@ -80,14 +97,21 @@ export class BirtService {
             viewer1.setReportDesign($('#openReportName').val());
             var options = new actuate.viewer.UIOptions();
             viewer1.setUIOptions(options);
-            console.log('starting');
-            $('.designMessage').hide();
+            viewer1.setParameterValues(parameters);
             viewer1.submit(function() {
             });
-            dlg.close();
         }catch(err){
             console.log(err);
         }
+    }
+
+    openReport = function(dlg, pane, reportName) {
+        console.log(dlg);
+        console.log(pane);
+
+        this.runReport(pane, window.reportDesign, null);
+        $('.designMessage').hide();
+        dlg.close();
     }
 
     saveReport = function(dlg) {

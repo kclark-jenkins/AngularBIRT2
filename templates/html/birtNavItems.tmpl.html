@@ -22,7 +22,7 @@
     <li><div class="pagination"></div></li>
 </ul>
 
-<modal #openDialog (focusin)="openExplorer('reportExplorer')">
+<modal #openDialog (open)="openExplorer('reportExplorer')">
     <modal-header>
         <h1>Select a report design</h1>
     </modal-header>
@@ -62,15 +62,16 @@
     </modal-footer>
 </modal>
 
-<modal #parametersDialog>
+<modal #parametersDialog (focusin)="openParameters(parametersDialog, 'birtParameters')">
     <modal-header>
         <h1>Parameters</h1>
     </modal-header>
     <modal-content>
-
+        <div id="birtParameters"></div>
     </modal-content>
     <modal-footer>
-        <button class="btn btn-primary" (click)="parametersDialog.close()">close</button>
+        <button class="btn btn-primary" (click)="runWithParameters(parametersDialog, 'birt')">Run Report</button>
+        <button class="btn btn-primary" (click)="parametersDialog.close()">Close</button>
     </modal-footer>
 </modal>
 
