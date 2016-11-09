@@ -106,4 +106,13 @@ export class BirtNavItemsComponent implements OnInit {
     help(t): void {
         t.open();
     }
+
+    export(filetype): void {
+        console.log('export('+filetype+')');
+        this.birtService.export(filetype);
+    }
+
+    move(direction): void {
+        this.birtService.move(direction);
+    }
 }

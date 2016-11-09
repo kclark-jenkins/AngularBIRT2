@@ -25,28 +25,37 @@ export class BirtService {
 
     getParameters = function(dlg, pane, paramPane) {
         console.log('getParameters');
-        var birtProps = this.getProperties();
+        var birtProperties = this.getProperties();
 
         if(this.getProperties().birtParameters == null) {
-            birtProps.birtParameters = new actuate.Parameter(birtProps.paramDiv);
+            birtProperties.birtParameters = new actuate.Parameter(birtProperties.paramDiv);
         }
 
-        birtProps.birtParameters.setReportName(window.actReportDesign);
+        birtProperties.birtParameters.setReportName(window.actReportDesign);
 
         this.getProperties().birtParameters.registerEventHandler(actuate.parameter.EventConstants.ON_EXCEPTION, function(viewerInstance, exception){
             console.log(exception)
         });
 
 
-        birtProps.birtParameters.submit(function() {
+        birtProperties.birtParameters.submit(function() {
             console.log('test1');
-            birtProps.reqOps.setRepositoryType('Enterprise');
-            birtProps.reqOps.setVolume('Default Volume');
-            birtProps.reqOps.setCustomParameters({});
-            birtProps.actViewer = new actuate.Viewer(birtProps.actViewerContainer);
-            birtProps.actViewer.setReportName(window.actReportDesign);
+            birtProperties.reqOps.setRepositoryType('Enterprise');
+            birtProperties.reqOps.setVolume('Default Volume');
+            birtProperties.reqOps.setCustomParameters({});
+            birtProperties.actViewer = new actuate.Viewer(birtProperties.actViewerContainer);
+            birtProperties.actViewer.setReportName(window.actReportDesign);
 
-            birtProps.actViewer.registerEventHandler(actuate.viewer.EventConstants.ON_EXCEPTION, function(viewerInstance, exception){
+            birtProperties.actViewer.registerEventHandler(actuate.viewer.EventConstants.ON_EXCEPTION, function(viewerInstance, exception){
+                if($('.designMessage').is(":visible")) {
+                    $('.designMessage').fadeOut('fast', function() {
+                        $('#' + pane).fadeIn('slow', function(){});
+                    })
+
+                    $('.currentPage').html('1');
+                    $('.totalPages').html(birtProperties.actViewer.getTotalPageCount());
+                }
+
                 console.log(exception)
                 $('.reportExplorerControls').fadeOut('slow', function() {
                     $('#openDialogTitle').html('Report Parameters');
@@ -54,14 +63,25 @@ export class BirtService {
                 });
             });
 
-            birtProps.actViewer.submit(function() {
+            // TOOLBAR
+            var uioptions = new actuate.viewer.UIOptions( );
+                uioptions.enableToolBar(false);
+
+            birtProperties.actViewer.setWidth($('.birtContainer').width() - 25);
+            birtProperties.actViewer.setHeight($('.birtContainer').height() - 70);
+            birtProperties.actViewer.setUIOptions(uioptions);
+            birtProperties.actViewer.submit(function() {
+                birtProperties.actViewer.enableIV(function(){});
                 if($('.designMessage').is(":visible")) {
                     $('.designMessage').fadeOut('fast', function() {
                         $('#' + pane).fadeIn('slow', function(){});
                     })
+
+                    $('.currentPage').html('1');
+                    $('.totalPages').html(birtProperties.actViewer.getTotalPageCount());
                 }
-                console.log('birtProps.actViewer.submit(function(){}: LINE 57');
-                //dlg.close();
+                console.log('birtProperties.actViewer.submit(function(){}: LINE 57');
+                dlg.close();
             });
         });
     }
@@ -75,7 +95,11 @@ export class BirtService {
             console.log(pvalues);
             birtProperties.actViewer.setParameterValues(pvalues);
             birtProperties.actViewer.submit(function(){
+                birtProperties.actViewer.enableIV(function(){});
                 console.log('birtProperties.actViewer.submit(function(){}: LINE 78');
+                $('.currentPage').html('1');
+                $('.totalPages').html(birtProperties.actViewer.getTotalPageCount());
+                dlg.close();
             });
         });
     }
@@ -113,7 +137,7 @@ export class BirtService {
                 // TODO: Do this the angular way
                 birtProperties.actReportDesign = path_name;
                 window.actReportDesign = path_name;
-                $('#openReportName').val(window.reportDesign);
+                $('#openReportName').val(path_name);
             }else{
             }
         }, function() {
@@ -136,13 +160,12 @@ export class BirtService {
         }
 
         this.getProperties().actSaveExplorer = new actuate.ReportExplorer(pane);
-        var birtProps = this.getProperties();
+        var birtProperties = this.getProperties();
         this.getProperties().actSaveExplorer.registerEventHandler( actuate.reportexplorer.
             EventConstants.ON_SELECTION_CHANGED, function(selected_item, path_name){
             if(path_name != null) {
-                // TODO: Do this the angular way
-                window.actReportDesign = path_name;
-                $('#saveReportName').val(birtProps.actReportDesign);
+                birtProperties.newReportDesign = path_name;
+                $('#saveReportName').val(birtProperties.newReportDesign);
             }else{
             }
         });
@@ -168,6 +191,8 @@ export class BirtService {
 
             if (this.getProperties().actViewer == null) {
                 this.getProperties().actViewer = new actuate.Viewer(pane);
+                var uioptions = new actuate.viewer.UIOptions( );
+                uioptions.enableToolBar(false);
             }
 
             if (this.getProperties().actUiOps == null) {
@@ -175,8 +200,9 @@ export class BirtService {
                 this.getProperties().actUiOps.enableToolBar(false);
             }
 
-            this.getProperties().options.enableToolBar(false);
-            this.getProperties().actViewer.setUIOptions(this.getProperties().actUiOps);
+            var uioptions = new actuate.viewer.UIOptions( );
+            uioptions.enableToolBar(false);
+            
             this.getProperties().actViewer.setParameterValues(pvalues);
             this.getProperties().actViewer.setReportName(this.getProperties().actReportDesign);
 
@@ -185,14 +211,17 @@ export class BirtService {
             $('.birtViewer').width(2000)
 
 
-            this.getProperties().actViewer.setUIOptions(this.getProperties().actUiOps);
             this.getProperties().actViewer.setParameterValues(parameters);
-            var birtProps = this.getProperties();
+            var birtProperties = this.getProperties();
             this.getProperties().actViewer.registerEventHandler(actuate.viewer.EventConstants.ON_EXCEPTION, function (viewerInstance, exception) {
                 console.log('error')
             });
+            this.getProperties().actUiOpts.enableToolBar(false);
             this.getProperties().actViewer.submit(function () {
+                birtProperties.actViewer.enableIV(function(){});
                 console.log('this.getProperties().actViewer.submit(function(){}: LINE 196');
+                $('.currentPage').html('1');
+                $('.totalPages').html(birtProperties.actViewer.getTotalPageCount());
             });
         } catch (err) {
             console.log(err);
@@ -205,8 +234,9 @@ export class BirtService {
     };
 
     saveReport = function(dlg) {
-        //alert($('#saveReportName').val());
-        //dlg.close();
+        alert($('#saveReportName').val());
+        this.getProperties().actViewer.saveReportDesign($('#saveReportName').val());
+        dlg.close();
     };
 
     parametersDialog = function() {
@@ -219,5 +249,76 @@ export class BirtService {
 
     helpDialog = function() {
         console.log('Help Dialog');
+    };
+
+    updatePagination = function() {
+        $('.currentPage').html(this.getProperties().actViewer.getCurrentPageNum( ));
+        $('.totalPages').html(this.getProperties().getTotalPageCount());
     }
-};
+
+    move = function(direction) {
+        switch(direction) {
+            case 'FORWARD':
+                this.getProperties().actViewer.gotoPage(this.getProperties().actViewer.getCurrentPageNum( ) + 1);
+                this.updatePagination();
+                break;
+            case 'BACKWARD':
+                this.getProperties().actViewer.gotoPage(this.getProperties().actViewer.getCurrentPageNum( ) - 1);
+                this.updatePagination();
+                break;
+            case 'FIRST':
+                this.getProperties().actViewer.gotoPage(1);
+                this.updatePagination();
+                break;
+            case 'LAST':
+                this.getProperties().actViewer.gotoPage(this.getProperties().getTotalPageCount());
+                this.updatePagination();
+                break;
+        }
+    }
+
+    export = function(filetype) {
+        console.log('exporting');
+        switch(filetype){
+            case 'XLS':
+                console.log(filetype);
+                this.getProperties().actViewer.downloadReport('xls', null, null);
+                break;
+            case 'PDF':
+                console.log(filetype);
+                this.getProperties().actViewer.downloadReport('pdf', null, null);
+            case 'XLSX':
+                console.log(filetype);
+                this.getProperties().actViewer.downloadReport('xlsx', null, null);
+                break;
+            case 'PS':
+                console.log(filetype);
+                this.getProperties().actViewer.downloadReport('ps', null, null);
+                break;
+            case 'PPT':
+                console.log(filetype);
+                this.getProperties().actViewer.downloadReport('ppt', null, null);
+                break;
+            case 'PPTX':
+                console.log(filetype);
+                this.getProperties().actViewer.downloadReport('pptx', null, null);
+                break;
+            case 'DOC':
+                console.log(filetype);
+                this.getProperties().actViewer.downloadReport('doc', null, null);
+                break;
+            case 'DOCX':
+                console.log(filetype);
+                this.getProperties().actViewer.downloadReport('docx', null, null);
+                break;
+            case 'XHTML':
+                console.log(filetype);
+                this.getProperties().actViewer.downloadReport('xhtml', null, null);
+                break;
+            case 'PRINT':
+                console.log(filetype);
+                //this.getProperties().actViewer.downloadReport('', null, null);
+                break;
+        }
+    }
+}

@@ -26,6 +26,7 @@ export const BIRTPROPERTIES: Property = {
     actSaveExplorer: null,
     actOptions: null,
     actReportDesign: null,
+    newReportDesign: '',
     actInitModules: function() {
         try {
             actuate.load('viewer');
