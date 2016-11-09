@@ -10,104 +10,79 @@ export class BirtService {
 
     constructor() {
         console.log('BirtService constructor');
-        
-        var props = this.getProperties();
+        this.getProperties().actInitModules();
+        this.getProperties().actInit(this.getProperties().ihub,
+            this.getProperties().reqOps,
+            this.getProperties().username,
+            this.getProperties().password,
+            function() {
+                console.log('done loading');
 
-        try {
-            actuate.load('viewer');
-            actuate.load('parameter');
-            actuate.load('reportexplorer');
-            actuate.load('dialog');
-            actuate.load('parameter');
-
-            this.req = new actuate.RequestOptions( );
-            actuate.initialize( props.ihub, props.reqOps, props.username, props.password, function(){});
-
-        }catch(err){
-            console.log(err);
-        }
-    };
-
-    loadBirtModules = function() {
-
-    };
-    test = function() {
-
+            });
     };
 
     getParameters = function(dlg, pane, paramPane) {
         console.log('getParameters');
-        window.birtParameters = new actuate.Parameter(paramPane);
+        var birtProps = this.getProperties();
 
-        window.birtParameters.setReportName(window.reportDesign);
-        window.birtParameters.submit(function() {
-            // TODO: Do this the angular way
-            //console.log(birtParameters);
-            var paramDef = window.birtParameters._._paramImpl._paramDefs;
+        if(this.getProperties().birtParameters == null) {
+            birtProps.birtParameters = new actuate.Parameter(birtProps.paramDiv);
+        }
+
+        birtProps.birtParameters.setReportName(window.actReportDesign);
+        birtProps.birtParameters.submit(function() {
+            var paramDef = birtProps.birtParameters._._paramImpl._paramDefs;
 
             for(var i=0;i<paramDef.length;i++) {
                 if(paramDef[i]._._isRequired == true && paramDef[i]._._isHidden == false) {
                     $('.reportExplorerControls').fadeOut('slow', function() {
-                        $('#openDialogTitle').html('Report Parameters');
                         $('.reportExplorerParameters').fadeIn('slow', function(){});
                     });
                 }
             }
 
-            var reqOps = new actuate.RequestOptions();
-            reqOps.setRepositoryType('Enterprise');
-            reqOps.setVolume('Default Volume');
-            reqOps.setCustomParameters({});
+            birtProps.reqOps.setRepositoryType('Enterprise');
+            birtProps.reqOps.setVolume('Default Volume');
+            birtProps.reqOps.setCustomParameters({});
 
-            var viewer1 = new actuate.Viewer(pane);
-            viewer1.setReportDesign(window.reportDesign);
-            var options = new actuate.viewer.UIOptions();
-            viewer1.setUIOptions(options);
+            birtProps.actViewer = new actuate.Viewer(birtProps.actViewerContainer);
+            birtProps.actViewer.setReportDesign(window.actReportDesign);
+
+            birtProps.actViewer.setUIOptions(birtProps.actOptions);
             if($('.designMessage').is(":visible")) {
                 $('.designMessage').fadeOut('slow', function() {
                     $('#' + pane).fadeIn('slow', function(){});
                 })
             }
-            viewer1.submit(function() {
+            birtProps.actViewer.submit(function() {
                 //dlg.close();
             });
-            //this.runReport(pane, window.reportName, null);
-            //dlg.close();
         });
     }
 
     openDialogRunParameters = function(pane, dlg) {
         console.log('openDialogRunParameters');
         console.log('what');
-        var executor = this.runReport;
-        window.birtParameters.downloadParameterValues(function(pvalues) {
-            var reqOps = new actuate.RequestOptions();
-            reqOps.setRepositoryType('Enterprise');
-            reqOps.setVolume('Default Volume');
-            reqOps.setCustomParameters({});
 
-            var viewer1 = new actuate.Viewer(pane);
-            viewer1.setReportDesign(window.reportDesign);
-            var options = new actuate.viewer.UIOptions();
-            viewer1.setUIOptions(options);
-            viewer1.setParameterValues(pvalues);
-            if($('.designMessage').is(":visible")) {
-                $('.designMessage').fadeOut('slow', function() {
-                    $('#' + pane).fadeIn('slow', function(){});
-                })
-            }
-            viewer1.submit(function() {
-                //dlg.close();
+        var executor = this.runReport;
+        var birtProperties = this.getProperties();
+
+        this.getProperties().birtParameters.setReportName(window.actReportDesign);
+        this.getProperties().birtParameters.downloadParameterValues(function(pvalues) {
+            console.log(pvalues);
+            birtProperties.actViewer.setParameterValues(pvalues);
+            birtProperties.actViewer.submit(function(){
             });
         });
     }
 
     openParameters = function(dlg, pane) {
-        var birtParameters = new actuate.Parameter(pane);
+        if(this.getProperties().birtParameters == null) {
+            this.getProperties().birtParameters = new actuate.Parameter(pane);
+        }
 
-        birtParameters.setReportName(window.reportDesign);
-        birtParameters.submit(function() {
-            // TODO: Do this the angular way
+        this.getProperties().birtParameters.setReportName(this.getProperties().actReportDesign);
+        this.getProperties().birtParameters.submit(function() {
             window.params = birtParameters;
         });
     }
@@ -119,54 +94,84 @@ export class BirtService {
     }
 
     openDialog = function(pane) {
-        var explorer = new actuate.ReportExplorer(pane);
-        explorer.registerEventHandler( actuate.reportexplorer.
+        if(this.getProperties().actExplorer == null) {
+            this.getProperties().actExplorer = new actuate.ReportExplorer(pane);
+        }
+
+        var birtProperties = this.getProperties();
+        this.getProperties().actExplorer.registerEventHandler( actuate.reportexplorer.
             EventConstants.ON_SELECTION_CHANGED, function(selected_item, path_name){
             if(path_name != null) {
                 // TODO: Do this the angular way
-                window.reportDesign = path_name;
+                birtProperties.actReportDesign = path_name;
+                window.actReportDesign = path_name;
                 $('#openReportName').val(window.reportDesign);
             }else{
             }
         } );
-        explorer.setFolderName( "/" );
+        this.getProperties().actExplorer.setFolderName( "/" );
         var resultDef =
             "Name|FileType|Version|VersionName|Description";
-        explorer.setResultDef( resultDef.split("|") );
-        explorer.submit(function(){});
+        this.getProperties().actExplorer.setResultDef( resultDef.split("|") );
+        this.getProperties().actExplorer.submit(function(){});
     };
 
     saveDialog = function(pane) {
-        var explorer = new actuate.ReportExplorer(pane);
-        explorer.registerEventHandler( actuate.reportexplorer.
+        if(this.getProperties().actSaveExplorer == null) {
+            this.getProperties().actSaveExplorer = new actuate.ReportExplorer(pane);
+        }
+
+        this.getProperties().actSaveExplorer = new actuate.ReportExplorer(pane);
+        var birtProps = this.getProperties();
+        this.getProperties().actSaveExplorer.registerEventHandler( actuate.reportexplorer.
             EventConstants.ON_SELECTION_CHANGED, function(selected_item, path_name){
             if(path_name != null) {
                 // TODO: Do this the angular way
-                window.reportDesign = path_name;
-                $('#saveReportName').val(window.reportDesign);
+                window.actReportDesign = path_name;
+                $('#saveReportName').val(birtProps.actReportDesign);
             }else{
             }
         } );
-        explorer.setFolderName( "/" );
+        this.getProperties().actSaveExplorer.setFolderName( "/" );
         var resultDef =
             "Name|FileType|Version|VersionName|Description";
-        explorer.setResultDef( resultDef.split("|") );
-        explorer.submit();
+        this.getProperties().actSaveExplorer.setResultDef( resultDef.split("|") );
+        this.getProperties().actSaveExplorer.submit();
     };
 
     runReport = function(pane, reportName, parameters) {
         try {
-            var reqOps = new actuate.RequestOptions();
-            reqOps.setRepositoryType('Enterprise');
-            reqOps.setVolume('Default Volume');
-            reqOps.setCustomParameters({});
+            if(this.getProperties().reqOps == null) {
+                this.getProperties().reqOps = new actuate.RequestOptions();
+            }
 
-            var viewer1 = new actuate.Viewer(pane);
-            viewer1.setReportDesign(window.reportDesign);
-            var options = new actuate.viewer.UIOptions();
-            viewer1.setUIOptions(options);
-            viewer1.setParameterValues(parameters);
-            viewer1.submit(function() {
+            this.getProperties().reqOps.setRepositoryType(this.getProperties().actRepoType);
+            this.getProperties().reqOps.setVolume(this.getProperties().actVolume);
+            this.getProperties().reqOps.setCustomParameters(this.getProperties().actCustomParams);
+
+            if(this.getProperties().actViewer == null) {
+                this.getProperties().actViewer = new actuate.Viewer(pane);
+            }
+
+            if(this.getProperties().actUiOps == null) {
+                this.getProperties().actUiOps = new actuate.viewer.UIOptions();
+                this.getProperties().actUiOps.enableToolBar(false);
+            }
+
+            this.getProperties().options.enableToolBar(false);
+            this.getProperties().actViewer.setUIOptions(this.getProperties().actUiOps);
+            this.getProperties().actViewer.setParameterValues(pvalues);
+            this.getProperties().actViewer.setReportDesign(this.getProperties().actReportDesign);
+
+            this.getProperties().actViewer.setWidth($('.birtContainer').width() - 20);
+            this.getProperties().actViewer.setHeight(1000);
+            $('.birtViewer').width(2000)
+
+
+            this.getProperties().actViewer.setUIOptions(this.getProperties().actUiOps);
+            this.getProperties().actViewer.setParameterValues(parameters);
+            var birtProps = this.getProperties();
+            this.getProperties().actViewer.submit(function() {
             });
         }catch(err){
             console.log(err);
@@ -176,10 +181,6 @@ export class BirtService {
     openReport = function(dlg, pane, paramPane) {
         console.log('openReport');
         this.getParameters(dlg, pane, paramPane);
-
-        //this.runReport(pane, window.reportDesign, null);
-        //$('.designMessage').hide();
-        //dlg.close();
     }
 
     saveReport = function(dlg) {
