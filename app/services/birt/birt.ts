@@ -1,4 +1,6 @@
 import {Property} from "./property";
+declare var actuate:any;
+
 function loadStuff() {
 }
 export const BIRTPROPERTIES: Property = {

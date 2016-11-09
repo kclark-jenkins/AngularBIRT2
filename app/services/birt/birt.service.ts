@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable, ElementRef} from '@angular/core';
 import { Property } from './property';
 import { BIRTPROPERTIES } from './birt';
+declare var $:any;
+declare var actuate:any;
 
 @Injectable()
 export class BirtService {
@@ -30,31 +32,35 @@ export class BirtService {
         }
 
         birtProps.birtParameters.setReportName(window.actReportDesign);
+
+        this.getProperties().birtParameters.registerEventHandler(actuate.parameter.EventConstants.ON_EXCEPTION, function(viewerInstance, exception){
+            console.log(exception)
+        });
+
+
         birtProps.birtParameters.submit(function() {
-            var paramDef = birtProps.birtParameters._._paramImpl._paramDefs;
-
-            for(var i=0;i<paramDef.length;i++) {
-                if(paramDef[i]._._isRequired == true && paramDef[i]._._isHidden == false) {
-                    $('.reportExplorerControls').fadeOut('slow', function() {
-                        $('.reportExplorerParameters').fadeIn('slow', function(){});
-                    });
-                }
-            }
-
+            console.log('test1');
             birtProps.reqOps.setRepositoryType('Enterprise');
             birtProps.reqOps.setVolume('Default Volume');
             birtProps.reqOps.setCustomParameters({});
-
             birtProps.actViewer = new actuate.Viewer(birtProps.actViewerContainer);
-            birtProps.actViewer.setReportDesign(window.actReportDesign);
+            birtProps.actViewer.setReportName(window.actReportDesign);
 
-            birtProps.actViewer.setUIOptions(birtProps.actOptions);
-            if($('.designMessage').is(":visible")) {
-                $('.designMessage').fadeOut('slow', function() {
-                    $('#' + pane).fadeIn('slow', function(){});
-                })
-            }
+            birtProps.actViewer.registerEventHandler(actuate.viewer.EventConstants.ON_EXCEPTION, function(viewerInstance, exception){
+                console.log(exception)
+                $('.reportExplorerControls').fadeOut('slow', function() {
+                    $('#openDialogTitle').html('Report Parameters');
+                    $('.reportExplorerParameters').fadeIn('slow', function(){});
+                });
+            });
+
             birtProps.actViewer.submit(function() {
+                if($('.designMessage').is(":visible")) {
+                    $('.designMessage').fadeOut('fast', function() {
+                        $('#' + pane).fadeIn('slow', function(){});
+                    })
+                }
+                console.log('birtProps.actViewer.submit(function(){}: LINE 57');
                 //dlg.close();
             });
         });
@@ -62,9 +68,6 @@ export class BirtService {
 
     openDialogRunParameters = function(pane, dlg) {
         console.log('openDialogRunParameters');
-        console.log('what');
-
-        var executor = this.runReport;
         var birtProperties = this.getProperties();
 
         this.getProperties().birtParameters.setReportName(window.actReportDesign);
@@ -72,6 +75,7 @@ export class BirtService {
             console.log(pvalues);
             birtProperties.actViewer.setParameterValues(pvalues);
             birtProperties.actViewer.submit(function(){
+                console.log('birtProperties.actViewer.submit(function(){}: LINE 78');
             });
         });
     }
@@ -82,8 +86,12 @@ export class BirtService {
         }
 
         this.getProperties().birtParameters.setReportName(this.getProperties().actReportDesign);
+        this.getProperties().birtParameters.registerEventHandler(actuate.parameter.EventConstants.ON_EXCEPTION, function(viewerInstance, exception){
+            console.log('error')
+        })
         this.getProperties().birtParameters.submit(function() {
             window.params = birtParameters;
+            console.log('this.getProperties().birtParameters.submit(function(){}: LINE 92');
         });
     }
 
@@ -108,12 +116,18 @@ export class BirtService {
                 $('#openReportName').val(window.reportDesign);
             }else{
             }
+        }, function() {
+            console.log('error')
         } );
         this.getProperties().actExplorer.setFolderName( "/" );
         var resultDef =
             "Name|FileType|Version|VersionName|Description";
         this.getProperties().actExplorer.setResultDef( resultDef.split("|") );
-        this.getProperties().actExplorer.submit(function(){});
+        //this.getProperties().actExplorer.setReportName(window.actReportDeign); // Kris
+        this.getProperties().actExplorer.submit(function(){
+            console.log('this.getProperties().actExplorer.submit(function(){}: LINE 130');
+            // Kris2
+        });
     };
 
     saveDialog = function(pane) {
@@ -131,17 +145,20 @@ export class BirtService {
                 $('#saveReportName').val(birtProps.actReportDesign);
             }else{
             }
-        } );
+        });
         this.getProperties().actSaveExplorer.setFolderName( "/" );
         var resultDef =
             "Name|FileType|Version|VersionName|Description";
         this.getProperties().actSaveExplorer.setResultDef( resultDef.split("|") );
+        this.getProperties().actSaveExplorer.registerEventHandler(actuate.reportexplorer.EventConstants.ON_EXCEPTION, function(viewerInstance, exception){
+            console.log('error')
+        });
         this.getProperties().actSaveExplorer.submit();
     };
 
     runReport = function(pane, reportName, parameters) {
         try {
-            if(this.getProperties().reqOps == null) {
+            if (this.getProperties().reqOps == null) {
                 this.getProperties().reqOps = new actuate.RequestOptions();
             }
 
@@ -149,11 +166,11 @@ export class BirtService {
             this.getProperties().reqOps.setVolume(this.getProperties().actVolume);
             this.getProperties().reqOps.setCustomParameters(this.getProperties().actCustomParams);
 
-            if(this.getProperties().actViewer == null) {
+            if (this.getProperties().actViewer == null) {
                 this.getProperties().actViewer = new actuate.Viewer(pane);
             }
 
-            if(this.getProperties().actUiOps == null) {
+            if (this.getProperties().actUiOps == null) {
                 this.getProperties().actUiOps = new actuate.viewer.UIOptions();
                 this.getProperties().actUiOps.enableToolBar(false);
             }
@@ -161,7 +178,7 @@ export class BirtService {
             this.getProperties().options.enableToolBar(false);
             this.getProperties().actViewer.setUIOptions(this.getProperties().actUiOps);
             this.getProperties().actViewer.setParameterValues(pvalues);
-            this.getProperties().actViewer.setReportDesign(this.getProperties().actReportDesign);
+            this.getProperties().actViewer.setReportName(this.getProperties().actReportDesign);
 
             this.getProperties().actViewer.setWidth($('.birtContainer').width() - 20);
             this.getProperties().actViewer.setHeight(1000);
@@ -171,26 +188,30 @@ export class BirtService {
             this.getProperties().actViewer.setUIOptions(this.getProperties().actUiOps);
             this.getProperties().actViewer.setParameterValues(parameters);
             var birtProps = this.getProperties();
-            this.getProperties().actViewer.submit(function() {
+            this.getProperties().actViewer.registerEventHandler(actuate.viewer.EventConstants.ON_EXCEPTION, function (viewerInstance, exception) {
+                console.log('error')
             });
-        }catch(err){
+            this.getProperties().actViewer.submit(function () {
+                console.log('this.getProperties().actViewer.submit(function(){}: LINE 196');
+            });
+        } catch (err) {
             console.log(err);
         }
-    }
+    };
 
     openReport = function(dlg, pane, paramPane) {
         console.log('openReport');
         this.getParameters(dlg, pane, paramPane);
-    }
+    };
 
     saveReport = function(dlg) {
         //alert($('#saveReportName').val());
         //dlg.close();
-    }
+    };
 
     parametersDialog = function() {
         console.log('Parameters Dialog');
-    }
+    };
 
     filtersDialog = function() {
         console.log('Filters Dialog');
